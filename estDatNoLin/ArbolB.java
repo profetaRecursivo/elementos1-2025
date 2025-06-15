@@ -15,6 +15,38 @@ public class ArbolB<T>{
         return res;
     }
 
+    public boolean sempeso(ArbolB<Integer> a, ArbolB<Integer> b, int n){
+        Par<Boolean, Par<Integer, Integer>> parsito;
+            //<SonIsomorfos, <suma a, suma b>>
+            parsito = recorrerEstructura(a, b);
+        boolean res = parsito.first && (Math.abs(parsito.second.first - parsito.second.second) <= n);
+        return res;
+    }
+    
+    private Par<Boolean, Par<Integer, Integer>> recorrerEstructura(ArbolB<Integer> a, ArbolB<Integer> b){
+        Par<Boolean, Par<Integer, Integer>> res;
+        if(a.esVacia() == b.esVacia()){
+            if(a.esVacia()){
+                //
+                res = new Par<Boolean, Par<Integer, Integer>>(true, new Par<Integer, Integer>(0, 0));
+            }else{
+                Par<Boolean, Par<Integer, Integer>> izquierdos = recorrerEstructura(a.izq, b.izq);
+                //la suma a.izq, b.izq
+                Par<Boolean, Par<Integer, Integer>> derechos = recorrerEstructura(a.der, b.der);
+                //la suma a.der, b.der
+                int sumaTotalA = izquierdos.second.first + derechos.second.first + a.raiz;
+                int sumaTotalB = izquierdos.second.second + derechos.second.second + b.raiz;
+                boolean isomorfos = izquierdos.first && derechos.first;
+                res = new Par<Boolean, Par<Integer, Integer>>
+                (isomorfos, new Par<Integer, Integer>(sumaTotalA, sumaTotalB));
+            }
+        }else{
+            res = new Par<Boolean, Par<Integer, Integer>>(false, new Par<Integer, Integer>(-1, -1));
+        }
+        return res;
+    }
+
+    
     public boolean insertar(Lista<T> ruta, T dato){
         return insertar(ruta, dato, 0, ruta.getSize());
     }
